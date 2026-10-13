@@ -1,0 +1,55 @@
+/* ===== NexusGPT design tokens =====
+   Change colors here and the whole app updates (both themes). */
+
+:root,
+[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #0e0f1a;
+    --sidebar-bg: #0a0b14;
+    --surface: #171929;
+    --surface-2: #1f2238;
+
+    --text: #eceefd;
+    --text-muted: #9395b5;
+
+    --border: rgba(255, 255, 255, 0.08);
+    --hover: rgba(255, 255, 255, 0.06);
+    --active: rgba(139, 123, 255, 0.16);
+
+    --accent: #8b7bff;
+    --accent-gradient: linear-gradient(135deg, #7c5cff 0%, #22d3ee 100%);
+
+    --bubble-user-bg: linear-gradient(135deg, #6d4aff 0%, #3b82f6 100%);
+    --bubble-user-text: #ffffff;
+    --bubble-ai-bg: #171929;
+
+    --danger: #f87171;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+
+    --bg: #f5f6fc;
+    --sidebar-bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #eceefa;
+
+    --text: #181a33;
+    --text-muted: #666a8c;
+
+    --border: rgba(24, 26, 51, 0.1);
+    --hover: rgba(24, 26, 51, 0.05);
+    --active: rgba(91, 63, 224, 0.1);
+
+    --accent: #5b3fe0;
+    --accent-gradient: linear-gradient(135deg, #6d4aff 0%, #06b6d4 100%);
+
+    --bubble-user-bg: linear-gradient(135deg, #6d4aff 0%, #3b82f6 100%);
+    --bubble-user-text: #ffffff;
+    --bubble-ai-bg: #ffffff;
+
+    --danger: #dc2626;
+    --shadow: 0 10px 30px rgba(30, 30, 80, 0.14);
+}

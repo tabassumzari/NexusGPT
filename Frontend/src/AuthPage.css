@@ -1,0 +1,174 @@
+.authPage {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(124, 92, 255, 0.25), transparent 45%),
+        radial-gradient(circle at 85% 90%, rgba(34, 211, 238, 0.18), transparent 45%),
+        var(--bg);
+}
+
+.authTheme {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.2rem;
+}
+
+.authCard {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    text-align: left;
+}
+
+.authLogo {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(124, 92, 255, 0.35);
+}
+
+.authCard h1 {
+    margin: 0.4rem 0 0;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.authSub {
+    margin: 0 0 0.4rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.authCard label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.authCard input {
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.authCard input:focus {
+    border-color: var(--accent);
+}
+
+.authCard input::placeholder {
+    color: var(--text-muted);
+}
+
+.authError {
+    margin: 0;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    background: rgba(248, 113, 113, 0.12);
+    color: var(--danger);
+    font-size: 0.85rem;
+}
+
+.authSubmit {
+    margin-top: 0.3rem;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent-gradient);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.authSubmit:hover:not(:disabled) {
+    opacity: 0.92;
+}
+
+.authSubmit:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.authSwitch {
+    margin: 0.2rem 0 0;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.authSwitch button {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.authSwitch button:hover {
+    text-decoration: underline;
+}
+
+.forgotLink {
+    align-self: flex-end;
+    margin-top: -0.4rem;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--accent);
+    font-size: 0.82rem;
+    cursor: pointer;
+}
+
+.forgotLink:hover {
+    text-decoration: underline;
+}
+
+.authSuccess {
+    margin: 0;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    background: rgba(52, 211, 153, 0.12);
+    color: #10b981;
+    font-size: 0.85rem;
+}
+
+.authSwitch button:disabled {
+    color: var(--text-muted);
+    cursor: default;
+    text-decoration: none;
+}
+
+.authSwitch a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* the same look as the submit button, but for links */
+.linkBtn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+}

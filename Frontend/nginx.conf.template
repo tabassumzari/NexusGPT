@@ -1,0 +1,49 @@
+server {
+    listen 80;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # file uploads (the API itself allows up to 10 MB per file)
+    client_max_body_size 12m;
+
+    gzip on;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+
+    # Docker's built-in DNS. Resolving the backend lazily means nginx still starts
+    # even if the backend container isn't ready yet.
+    resolver ${DNS_RESOLVER} valid=10s ipv6=off;
+
+    # ---- API: forward to the backend ----
+    location /api/ {
+        set $backend "${BACKEND_URL}";
+        proxy_pass $backend;
+
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # IMPORTANT: AI replies are streamed. Without this, nginx would hold the
+        # whole answer back and deliver it all at once at the end.
+        proxy_buffering off;
+        proxy_cache off;
+        proxy_read_timeout 300s;
+    }
+
+    # ---- built files (file names contain a hash, so they can be cached for a year) ----
+    location /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # ---- the React app: any other address (/verify-email, /reset-password, ...) gets index.html ----
+    location / {
+        add_header Cache-Control "no-cache";
+        try_files $uri /index.html;
+    }
+}

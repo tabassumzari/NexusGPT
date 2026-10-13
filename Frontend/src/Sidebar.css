@@ -1,0 +1,265 @@
+.sidebar {
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    color: var(--text-muted);
+    height: 100vh;
+    height: 100dvh;
+    width: 290px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: margin-left 0.25s ease, transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* desktop: slide away and give the space to the chat */
+.sidebar.closed {
+    margin-left: -290px;
+}
+
+.sidebarTop {
+    padding: 1rem 0.9rem 0;
+}
+
+.brandRow {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.25rem 0.4rem 1rem;
+}
+
+.collapseBtn {
+    margin-left: auto;
+    height: 32px;
+    width: 32px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.collapseBtn:hover {
+    background: var(--hover);
+    color: var(--text);
+}
+
+.logo {
+    height: 32px;
+    width: 32px;
+    border-radius: 9px;
+}
+
+.brandName {
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* New chat button (scoped so it doesn't style every <button> in the app) */
+.newChatBtn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    background: var(--accent-gradient);
+    border: none;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+}
+
+.newChatBtn:hover {
+    opacity: 0.92;
+}
+
+.newChatBtn:active {
+    transform: scale(0.98);
+}
+
+.historyLabel {
+    margin: 1.4rem 0.4rem 0.4rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.history {
+    list-style: none;
+    margin: 0;
+    padding: 0 0.9rem;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.history li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.6rem 0.75rem;
+    margin-bottom: 0.2rem;
+    font-size: 0.875rem;
+    border-radius: 10px;
+    color: var(--text);
+    transition: background-color 0.15s;
+}
+
+.threadTitle {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.history li:hover {
+    background-color: var(--hover);
+}
+
+.threadActions {
+    display: flex;
+    gap: 0.8rem;
+    opacity: 0;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    transition: opacity 0.15s;
+}
+
+.history li:hover .threadActions,
+.history li.highlighted .threadActions {
+    opacity: 1;
+}
+
+.threadActions i:hover {
+    color: var(--text);
+}
+
+.threadActions .fa-trash:hover {
+    color: var(--danger);
+}
+
+/* touch screens have no hover, so always show the buttons */
+@media (hover: none) {
+    .threadActions {
+        opacity: 1;
+    }
+}
+
+.renameInput {
+    width: 100%;
+    padding: 0.2rem 0.4rem;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    background: var(--surface);
+    font-size: 0.875rem;
+    outline: none;
+}
+
+.history li.emptyHistory {
+    cursor: default;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.history li.emptyHistory:hover {
+    background: transparent;
+}
+
+/* ---------- search ---------- */
+.searchBox {
+    position: relative;
+    margin-top: 0.8rem;
+}
+
+.searchBox input {
+    width: 100%;
+    padding: 0.6rem 2rem 0.6rem 2.1rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    font-size: 0.85rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.searchBox input:focus {
+    border-color: var(--accent);
+}
+
+.searchBox input::placeholder {
+    color: var(--text-muted);
+}
+
+.searchBox > i {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.clearSearch {
+    position: absolute;
+    right: 0.35rem;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 24px;
+    width: 24px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.clearSearch:hover {
+    color: var(--text);
+}
+
+.highlighted {
+    background-color: var(--active);
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.sign {
+    padding: 0.9rem;
+    margin: 0 0.9rem 0.6rem;
+    font-size: 0.8rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+}
+
+.sign p {
+    margin: 0;
+}
+
+/* ---------- phones: sidebar becomes a slide-over drawer ---------- */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1100;
+        width: min(290px, 85vw);
+        box-shadow: var(--shadow);
+    }
+
+    .sidebar.closed {
+        margin-left: 0;
+        transform: translateX(-100%);
+        box-shadow: none;
+    }
+}

@@ -1,0 +1,54 @@
+# Runs the whole app: MongoDB + backend API + frontend (nginx).
+#   1. cp .env.example .env     and fill it in
+#   2. docker compose up -d --build
+#   3. open http://localhost:3000
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  backend:
+    build: ./Backend
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      PORT: 8080
+      MONGODB_URI: mongodb://mongo:27017/nexusgpt
+      JWT_SECRET: ${JWT_SECRET:?Please set JWT_SECRET in the .env file}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:3000}
+      CLIENT_ORIGIN: ${CLIENT_URL:-http://localhost:3000}
+      REQUIRE_EMAIL_VERIFICATION: ${REQUIRE_EMAIL_VERIFICATION:-false}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      TRUST_PROXY: 1 # the backend sits behind nginx
+    # no "ports": only the frontend container talks to the backend
+
+  frontend:
+    build:
+      context: ./Frontend
+      args:
+        VITE_API_URL: /api
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${WEB_PORT:-3000}:80"
+
+volumes:
+  mongo-data:

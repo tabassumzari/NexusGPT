@@ -1,0 +1,89 @@
+.modelSelect {
+    position: relative;
+}
+
+.modelTrigger {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.modelTrigger:hover,
+.modelTrigger[aria-expanded="true"] {
+    background: var(--hover);
+    border-color: var(--border);
+}
+
+.modelTrigger i {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+}
+
+.modelTrigger i.flipped {
+    transform: rotate(180deg);
+}
+
+.modelMenu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    min-width: 230px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    text-align: left;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+}
+
+.modelMenu li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.modelMenu li:hover {
+    background: var(--hover);
+}
+
+.modelMenu li.selected i {
+    color: var(--accent);
+}
+
+.modelName {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.modelDesc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+@media (max-width: 768px) {
+    .modelTrigger {
+        padding: 0.45rem 0.6rem;
+        font-size: 0.92rem;
+    }
+
+    .modelMenu {
+        min-width: 220px;
+    }
+}

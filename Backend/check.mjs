@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import {processUpload} from './utils/attachments.js';
+import {buildHistory} from './utils/history.js';
+import User from './models/User.js';
+import Thread from './models/Thread.js';
+import sharp from 'sharp';
+import fs from 'node:fs';
+process.env.JWT_SECRET='temporary-test-secret';
+const {default:chat}=await import('./routes/chat.js');
+const {default:auth}=await import('./routes/auth.js');
+let pass=0,fail=0;
+async function test(name,fn){try{await fn();pass++;console.log('PASS',name);}catch(e){fail++;console.log('FAIL',name,e.message);}}
+await test('Text/code upload',async()=>assert.equal((await processUpload({originalname:'test.js',buffer:Buffer.from('const a=1;')})).kind,'text'));
+for(const [name,filename,buffer,status] of [['Binary rejected','a.txt',Buffer.from([0,1]),415],['SVG rejected','a.svg',Buffer.from('<svg/>'),415],['Corrupt PDF rejected','a.pdf',Buffer.from('%PDF-broken'),422]])await test(name,()=>assert.rejects(processUpload({originalname:filename,buffer}),e=>e.status===status));
+await test('Text clipped to 60000 chars',async()=>{const d=await processUpload({originalname:'a.txt',buffer:Buffer.from('a'.repeat(60001))});assert.equal(d.text.length,60000);assert.equal(d.truncated,true);});
+await test('Valid PNG accepted',async()=>{const buffer=await sharp({create:{width:2,height:2,channels:3,background:'#ffffff'}}).png().toBuffer();assert.equal((await processUpload({originalname:'a.png',buffer})).mimeType,'image/png');});
+await test('Spoofed PNG rejected',()=>assert.rejects(processUpload({originalname:'fake.png',buffer:Buffer.concat([Buffer.from([137,80,78,71]),Buffer.alloc(20)])})));
+await test('History capped at 20',async()=>assert.equal((await buildHistory(Array.from({length:24},(_,i)=>({role:i%2?'assistant':'user',content:String(i)})),{})).length,20));
+await test('Leading assistant removed',async()=>assert.deepEqual(await buildHistory([{role:'assistant',content:'a'},{role:'user',content:'b'}],{}),[{role:'user',content:'b'}]));
+const uid='507f1f77bcf86cd799439011';User.findById=()=>({select:async()=>({_id:uid,tokenVersion:0,emailVerified:true})});
+const app=express();app.use(express.json());app.use('/api/auth',auth);app.use('/api',chat);
+const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));
+const base=`http://127.0.0.1:${server.address().port}`;const token=jwt.sign({sub:uid,v:0},process.env.JWT_SECRET);
+async function req(path,body,authorized=true){return fetch(base+path,{method:body?'POST':'GET',headers:{'Content-Type':'application/json',...(authorized?{Authorization:`Bearer ${token}`}:{})},...(body?{body:JSON.stringify(body)}:{})});}
+await test('Unauthenticated denied',async()=>assert.equal((await req('/api/thread',null,false)).status,401));
+await test('Models empty without keys',async()=>assert.deepEqual(await (await req('/api/models')).json(),[]));
+for(const [name,body,status] of [['Empty chat',{threadId:'t'},400],['Invalid mode',{threadId:'t',message:'hi',mode:'bad'},400],['Long prompt',{threadId:'t',message:'a'.repeat(8001)},400],['Invalid attachment',{threadId:'t',message:'hi',attachments:['bad']},400],['Missing provider',{threadId:'t',message:'hi'},503]])await test(name,async()=>assert.equal((await req('/api/chat',body)).status,status));
+for(const [name,path,body] of [['Invalid email','signup',{email:'bad',password:'12345678'}],['Short password','signup',{email:'a@b.com',password:'123'}],['Short reset password','reset-password',{token:'bad',password:'123'}],['Empty verification token','verify-email',{token:''}]])await test(name,async()=>assert.equal((await req('/api/auth/'+path,body,false)).status,400));
+const nativeFetch=globalThis.fetch;
+Thread.findOne=async()=>null;
+const saves=[];
+Thread.prototype.save=async function(){saves.push(this.messages.map(m=>({role:m.role,content:m.content})));return this;};
+process.env.OPENAI_API_KEY='test-placeholder';
+globalThis.fetch=async()=>new Response(JSON.stringify({error:{message:'simulated provider failure',type:'invalid_request_error'}}),{status:400,headers:{'Content-Type':'application/json'}});
+await test('User message saved before provider failure',async()=>{const response=await nativeFetch(base+'/api/chat',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`},body:JSON.stringify({threadId:'persistence-test',message:'Keep this message'})});const body=await response.text();assert.ok(body.includes('"type":"error"'));assert.equal(saves[0][0].content,'Keep this message');});
+const apiSource=fs.readFileSync('../Frontend/src/api.js','utf8').replace('import { API_URL } from "./config.js";','const API_URL="http://test/api";');
+globalThis.localStorage={getItem:()=>null};
+const {streamChat}=await import('data:text/javascript;base64,'+Buffer.from(apiSource).toString('base64'));
+await test('Interrupted SSE rejected',async()=>{globalThis.fetch=async()=>new Response('data: {"type":"token","text":"partial"}\n\n');await assert.rejects(streamChat({threadId:'t',message:'hi',onToken:()=>{}}),/interrupted/);});
+await test('Complete SSE accepted',async()=>{globalThis.fetch=async()=>new Response('data: {"type":"token","text":"hello"}\n\ndata: {"type":"done"}\n\n');let result='';await streamChat({threadId:'t',message:'hi',onToken:t=>result+=t});assert.equal(result,'hello');});
+globalThis.fetch=nativeFetch;
+server.close();console.log(`RESULT: ${pass} passed, ${fail} failed. Database lookup stubbed; no real AI calls.`);
+
+if(fail) process.exitCode=1;
