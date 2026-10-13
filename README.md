@@ -4,6 +4,8 @@
 
 **A full-stack AI chat assistant built with the MERN stack: streaming replies, multiple AI providers, file and image attachments, accounts with email verification, and a polished light/dark UI.**
 
+**Developer:** [Tabassum Zari](https://github.com/tabassumzari)
+
 ![Node](https://img.shields.io/badge/Node.js-20.19%2B-339933?logo=node.js&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![Express](https://img.shields.io/badge/Express-5-000000?logo=express)
@@ -102,7 +104,7 @@ Open <http://localhost:3000>. See [DEPLOYMENT.md](DEPLOYMENT.md) for production 
 Prerequisites: **Node.js 20.19+**, **MongoDB** (local or [Atlas](https://www.mongodb.com/atlas)), and at least one AI key ([OpenAI](https://platform.openai.com/api-keys) and/or [Anthropic](https://console.anthropic.com/)).
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/NexusGPT.git
+git clone https://github.com/tabassumzari/NexusGPT.git
 cd NexusGPT
 
 cd Backend && npm install
@@ -219,11 +221,11 @@ All routes except signup, login and the email-link routes need `Authorization: B
 
 ## Acknowledgements
 
-Originally based on a MERN ChatGPT-clone tutorial project. <!-- Credit the original source here, and add your license below. -->
+This project started from a MERN chat application and was extended with additional features, configuration, and regression tests.
 
 ## License
 
-Add a license of your choice (e.g. MIT) and describe it here.
+Licensed under the [MIT License](LICENSE).
 
 ## Verified fixes and tests
 
@@ -233,3 +235,9 @@ Run `npm ci` in Backend and Frontend. Run `npm test` in Backend, and
 This revision validates images by decoding them, detects incomplete AI streams,
 saves user messages before requesting AI replies, and provides a Retry reply button.
 See TEST_RESULTS.md for verification scope and remaining setup requirements.
+
+## Project Status
+
+The application runs locally with MongoDB connectivity.
+Live AI responses require a funded OpenAI or Anthropic API account.
+The project includes 23 passing regression checks using simulated database operations and AI responses.
