@@ -212,12 +212,13 @@ All routes except signup, login and the email-link routes need `Authorization: B
 
 ## Roadmap
 
-- [x] Automated regression checks (`cd Backend && npm test`)
-- [ ] CI
-- [ ] Export or share a conversation
-- [ ] Sign in with Google / GitHub
-- [ ] Word / PowerPoint attachments and OCR for scanned PDFs
+- [x] Automated regression checks
+- [ ] GitHub Actions CI
+- [ ] Export conversations
+- [ ] Sign in with Google or GitHub
+- [ ] Support Word documents and OCR for scanned PDFs
 - [ ] Per-user usage limits
+- [ ] Public deployment
 
 ## Acknowledgements
 
